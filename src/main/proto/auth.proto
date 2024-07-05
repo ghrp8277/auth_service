@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc";
+option java_outer_classname = "AuthProto";
+
+package auth;
+
+service AuthService {
+    rpc GenerateAccessToken (GenerateAccessTokenRequest) returns (Response);
+    rpc Logout (LogoutRequest) returns (Response);
+    rpc RefreshToken (RefreshTokenRequest) returns (Response);
+}
+
+message RefreshTokenRequest {
+    uint64 userId = 1;
+}
+
+message GenerateAccessTokenRequest {
+    uint64 userId = 1;
+}
+
+message LogoutRequest {
+    uint64 userId = 1;
+}
+
+message Response {
+    string result = 1;
+}
