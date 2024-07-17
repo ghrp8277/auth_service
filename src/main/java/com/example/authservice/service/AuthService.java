@@ -1,13 +1,14 @@
 package com.example.authservice.service;
 
 import com.example.authservice.entity.RefreshToken;
+import com.example.authservice.exception.InvalidRefreshTokenException;
+import com.example.authservice.exception.RefreshTokenNotFoundException;
 import com.example.authservice.repository.RefreshTokenRepository;
 import com.example.authservice.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import io.jsonwebtoken.Claims;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.ZoneId;
 import java.time.LocalDateTime;
@@ -33,7 +34,12 @@ public class AuthService {
 
     @Transactional
     public void logout(Long userId) {
-        refreshTokenRepository.deleteByUserId(userId);
+        Optional<String> existingRefreshTokenOpt = checkExistingRefreshToken(userId);
+        if (existingRefreshTokenOpt.isPresent()) {
+            refreshTokenRepository.deleteByUserId(userId);
+        } else {
+            throw new RefreshTokenNotFoundException();
+        }
     }
 
     public String generateAccessToken(Long userId) {
@@ -70,10 +76,10 @@ public class AuthService {
             if (!jwtUtil.isTokenExpired(refreshToken)) {
                 return generateAccessToken(userId);
             } else {
-                throw new RuntimeException("Invalid refresh token");
+                throw new InvalidRefreshTokenException();
             }
         } else {
-            throw new RuntimeException("Refresh token not found");
+            throw new RefreshTokenNotFoundException();
         }
     }
 
