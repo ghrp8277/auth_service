@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: spring-auth-container
-          image: 192.168.0.212:5555/spring-auth:20240805-143348
+          image: 192.168.0.212:5555/spring-auth:20240812-192240
           ports:
             - name: grpc
               containerPort: 3092
@@ -31,6 +31,22 @@ spec:
               value: root
             - name: DATABASE_PASSWORD
               value: testtest
+          livenessProbe:
+            exec:
+              command:
+                - /app/grpc-health-probe
+                - -addr=:3092
+                - -rpc-timeout=2s
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - /app/grpc-health-probe
+                - -addr=:3092
+                - -rpc-timeout=2s
+            initialDelaySeconds: 10
+            periodSeconds: 30
 
         - name: mysql-master-container
           image: 192.168.0.212:5555/mysql:latest

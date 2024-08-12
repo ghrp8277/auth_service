@@ -18,6 +18,15 @@ public class AuthServiceTmpl extends AuthServiceGrpc.AuthServiceImplBase {
     private GrpcResponseHelper grpcResponseHelper;
 
     @Override
+    public void check(HealthCheckRequest request, StreamObserver<HealthCheckResponse> responseObserver) {
+        HealthCheckResponse response = HealthCheckResponse.newBuilder()
+                .setStatus(HealthCheckResponse.ServingStatus.SERVING)
+                .build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
     @GrpcExceptionHandler
     public void generateAccessToken(GenerateAccessTokenRequest request, StreamObserver<Response> responseObserver) {
         String token = authService.generateToken(request.getUserId());
