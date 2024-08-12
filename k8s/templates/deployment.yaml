@@ -5,6 +5,11 @@ metadata:
   namespace: prod
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: auth
@@ -15,7 +20,7 @@ spec:
     spec:
       containers:
         - name: spring-auth-container
-          image: 192.168.0.212:5555/spring-auth:20240812-192240
+          image: 192.168.0.212:5555/spring-auth:20240812-223740
           ports:
             - name: grpc
               containerPort: 3092
