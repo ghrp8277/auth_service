@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: spring-auth-container
-          image: 192.168.0.212:5555/spring-auth:20240812-223740
+          image: 192.168.0.212:5555/spring-auth:20240818-013919
           ports:
             - name: grpc
               containerPort: 3092
